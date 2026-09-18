@@ -75,6 +75,9 @@ def new_page(browser):
     return context, context.new_page()
 
 
+REDIRECT_POLL_SECONDS = 10  # how long to wait for the SPA's date-fallback redirect to fire
+
+
 def check(browser, target):
     # A fresh context per target matters: reusing one page across sequential
     # navigations leaves client-side state primed so the SPA stops redirecting
@@ -82,11 +85,21 @@ def check(browser, target):
     context, page = new_page(browser)
     try:
         page.goto(target["url"], wait_until="networkidle", timeout=45000)
-        page.wait_for_timeout(1500)
 
         title = page.title()
         if "moment" in title.lower() or "checking" in title.lower():
             raise RuntimeError(f"blocked by challenge page (title={title!r})")
+
+        # The redirect-to-today logic runs asynchronously after load, and its
+        # timing varies with network latency (it fires slower from GitHub's
+        # runners than from a nearby machine). Poll instead of a fixed sleep,
+        # and only conclude "live" once the URL has held steady for the full
+        # window -- concluding early risks a false "live" positive.
+        deadline = time.monotonic() + REDIRECT_POLL_SECONDS
+        while time.monotonic() < deadline:
+            if target["date"] not in page.url:
+                break
+            page.wait_for_timeout(400)
 
         final_url = page.url
         live = target["date"] in final_url
