@@ -9,7 +9,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 STATE_FILE = Path("state.json")
-FAIL_THRESHOLD = 4  # ~2hrs of consecutive failures at a 30min schedule before we warn once
+FAIL_THRESHOLD = 6  # ~1hr of consecutive failures at a 10min schedule before we warn once
 
 TARGETS = [
     {

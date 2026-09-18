@@ -44,24 +44,22 @@ silently falling back to today).
 
 ### 2. Create the GitHub repo
 
-This is set up as a **private** repo, checking every 30 minutes to stay
-within GitHub's 2,000 free Actions minutes/month for private repos. Your
-bot token/chat ID are stored as encrypted secrets, never in code.
+This is set up as a **public** repo, checking every 10 minutes — public
+repos get unlimited free GitHub Actions minutes, so the frequent schedule
+doesn't burn through a quota. Nothing sensitive lives in the code itself;
+your bot token/chat ID are stored as encrypted repo secrets, never
+committed to a file.
 
 ```bash
 cd bms-watcher
 git init
 git add .
 git commit -m "Initial commit"
-gh repo create bms-watcher --private --source=. --remote=origin --push
+gh repo create bms-watcher --public --source=. --remote=origin --push
 ```
 
 (No `gh` CLI? Create an empty repo on github.com, then
 `git remote add origin <url> && git push -u origin main`.)
-
-If you ever want faster checks, switch the repo to public (Settings →
-General → Change visibility) and lower the cron interval back down in
-`.github/workflows/watch.yml` — public repos get unlimited free minutes.
 
 ### 3. Add secrets
 
@@ -79,7 +77,7 @@ The workflow runs every 10 minutes automatically
 
 ## Avoiding getting blocked
 
-- Checks run every 30 minutes, not continuously — light enough to not look
+- Checks run every 10 minutes, not continuously — light enough to not look
   like abuse.
 - Each run happens on a fresh GitHub-hosted runner with its own IP, so it
   doesn't look like one machine hammering the site repeatedly.
@@ -100,8 +98,7 @@ At that point, just check the page yourself, or increase the interval.
 ## Adjusting the schedule / dates
 
 - Change `cron: "*/10 * * * *"` in `.github/workflows/watch.yml` to poll
-  more/less often. **If you keep the repo private**, GitHub Actions gives
-  2,000 free minutes/month — at 10 minute intervals this watcher alone can
-  exceed that budget, so either keep the repo public (unlimited) or widen
-  the interval (e.g. `*/30 * * * *`) for a private repo.
+  more/less often. This only stays free at any frequency while the repo is
+  **public** — GitHub Actions minutes are metered (2,000/month free) on a
+  private repo, and 10-minute checks would burn through that fast.
 - Edit the `TARGETS` list in `watch.py` to watch different cinemas/dates.
