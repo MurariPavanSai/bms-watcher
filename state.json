@@ -5,7 +5,7 @@
   },
   "ALUC_0926": {
     "live": true,
-    "hash": "62ed40fd386f1bdb94cf58b7ab6e5be86e1b2f3abaef48cf78545c57417aeded"
+    "hash": "9a4bc560a47855e1bc9311f4d7a1e3bccc9ccc6b4a84e80a4ab5571d3c73929c"
   },
   "PRHN_0926": {
     "live": true,
@@ -17,11 +17,11 @@
   },
   "PRHN_0924": {
     "live": true,
-    "hash": "ed83b28e88d3a5f0992916888e160b1f223fe0724421b4d6e95f562dff042ea1"
+    "hash": "00793c9cddfd283ebdebdbac673b47426045027c4d0e9193ae0622ae617e383e"
   },
   "PARADISE_BMS_0923": {
-    "live": true,
-    "hash": "bbee429cb5c0ab252df838a3f644c71dafc03ddff9617e89ecf8ed8b37268ca2"
+    "live": false,
+    "hash": null
   },
   "PARADISE_DISTRICT_0923": {
     "live": false,
