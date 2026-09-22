@@ -17,6 +17,14 @@
   },
   "PRHN_0924": {
     "live": true,
-    "hash": "7f932a95566f4b6b17c6528e46dee66e2f44a155120420d941ddb679e3f369a8"
+    "hash": "ed83b28e88d3a5f0992916888e160b1f223fe0724421b4d6e95f562dff042ea1"
+  },
+  "PARADISE_BMS_0923": {
+    "live": true,
+    "hash": "bbee429cb5c0ab252df838a3f644c71dafc03ddff9617e89ecf8ed8b37268ca2"
+  },
+  "PARADISE_DISTRICT_0923": {
+    "live": false,
+    "hash": null
   }
 }
