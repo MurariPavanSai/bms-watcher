@@ -146,6 +146,9 @@ def check_movie_listing(page, target):
         if live:
             break
         page.wait_for_timeout(500)
+    if not live:
+        print(f"[debug] {target['key']} title={page.title()!r} url={page.url!r}")
+        print(f"[debug] {target['key']} not-live snapshot: {text[:600]!r}")
     return live, (text if live else "")
 
 
