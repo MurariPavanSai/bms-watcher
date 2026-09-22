@@ -127,15 +127,25 @@ def check_cinema_date(page, target):
     return live, text
 
 
+CONTENT_POLL_SECONDS = 12  # how long to wait for client-side rendering to finish
+
+
 def check_movie_listing(page, target):
     # No redirect on these pages: a not-yet-published date just renders with
     # no showtimes. "Live" = at least one showtime is actually on the page.
-    # A fixed render buffer (rather than networkidle) is used for these --
-    # District.in in particular has background network chatter that never
-    # goes fully idle, so waiting on networkidle here just times out.
-    page.wait_for_timeout(4000)
-    text = page_text(page)
-    live = bool(SHOWTIME_RE.search(text))
+    # Rendering timing varies with network latency same as the cinema_date
+    # redirect does (worse from GitHub's runners than a nearby machine), so
+    # poll instead of a fixed wait -- a fixed wait that's too short reads as
+    # a false "not live" and silently swallows the real notification.
+    deadline = time.monotonic() + CONTENT_POLL_SECONDS
+    text = ""
+    live = False
+    while time.monotonic() < deadline:
+        text = page_text(page)
+        live = bool(SHOWTIME_RE.search(text))
+        if live:
+            break
+        page.wait_for_timeout(500)
     return live, (text if live else "")
 
 
