@@ -1,21 +1,34 @@
 # BookMyShow Watcher
 
-Watches 4 BookMyShow cinema pages and sends a Telegram message when one:
+Watches ticketing pages across BookMyShow and District and sends a Telegram
+message when one:
 
-- **appears** — the requested date is currently outside BookMyShow's bookable
-  window, so the URL silently falls back to today's listing. Once the site
-  actually resolves the URL to the requested date, you get notified.
-- **changes** — once a date is live, any change to the showtime listing
-  (new film added, showtimes updated, etc.) triggers a notification.
+- **appears / opens** — the page currently shows no bookable content for the
+  target date, and flips to showing real showtimes.
+- **changes** — once live, any change to the showtime listing (new
+  cinema/showtime added, etc.) triggers a notification.
+
+Two kinds of pages are watched (`type` field in `watch.py`'s `TARGETS`):
+
+- `cinema_date` — a single cinema's day page. BookMyShow silently redirects
+  an out-of-window date back to today, so "live" means the URL held on the
+  requested date (checked by polling `window.location.href`, since the
+  redirect fires asynchronously and its timing varies by network latency).
+- `movie_listing` — a movie's cinema listing across a city (BookMyShow or
+  District). No redirect happens here; a not-yet-published date just renders
+  with zero showtimes, so "live" means at least one showtime string
+  (`H:MM AM/PM`) is actually present on the page.
 
 Watched pages:
 
-| Cinema | Date |
-|---|---|
-| Allu Cinemas: Kokapet (ALUC) | 26 Sep 2026 |
-| Prasads Multiplex Hyderabad (PRHN) | 26 Sep 2026 |
-| Allu Cinemas: Kokapet (ALUC) | 24 Sep 2026 |
-| Prasads Multiplex Hyderabad (PRHN) | 24 Sep 2026 |
+| Page | Type | Target date |
+|---|---|---|
+| Allu Cinemas: Kokapet (ALUC), BookMyShow | cinema_date | 26 Sep 2026 |
+| Prasads Multiplex Hyderabad (PRHN), BookMyShow | cinema_date | 26 Sep 2026 |
+| Allu Cinemas: Kokapet (ALUC), BookMyShow | cinema_date | 24 Sep 2026 |
+| Prasads Multiplex Hyderabad (PRHN), BookMyShow | cinema_date | 24 Sep 2026 |
+| The Paradise (Telugu, Hyderabad), BookMyShow | movie_listing | 23 Sep 2026 |
+| The Paradise (Hyderabad), District.in | movie_listing | 23 Sep 2026 |
 
 Runs on a GitHub Actions schedule (free) — no server to maintain. State is
 tracked in `state.json`, committed back to the repo after each run.
@@ -25,9 +38,25 @@ tracked in `state.json`, committed back to the repo after each run.
 BookMyShow sits behind Cloudflare's bot-challenge and renders pages
 client-side, so a plain `requests.get()` gets a challenge page, not the
 real content. `watch.py` uses Playwright (headless Chromium) to load each
-page like a real browser would, then reads `window.location.href` after
-the page settles to tell whether the requested date actually resolved (vs.
-silently falling back to today).
+page like a real browser would.
+
+Note on District.in specifically: it doesn't show the same Cloudflare
+challenge, but it has background network chatter that never goes fully
+idle, so `movie_listing` checks use a fixed render-wait instead of waiting
+for the network to go quiet (which just times out there).
+
+## A caveat on "shows are open" vs. "shows are listed"
+
+On District.in, a showtime can appear in the listing before it's actually
+bookable (District shows a "No tickets are available for this show" tooltip
+on some slots that are visible but not yet open). That tooltip only renders
+on hover via a build-hashed CSS class, so it's too fragile to key detection
+on reliably — it would break silently on District's next frontend deploy.
+The watcher instead notifies on any visible change to the listing (new
+cinema, new showtime, etc.), which is close but not a perfect proxy for
+"just became bookable." If this matters a lot, the fix is checking District's
+booking/seat-layout API directly rather than the rendered page — ask if you
+want that built out.
 
 ## Setup
 
