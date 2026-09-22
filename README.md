@@ -119,10 +119,20 @@ The workflow runs every 10 minutes automatically
   sends you one warning message that it might be blocked, instead of
   failing silently forever.
 
-If BookMyShow starts hard-blocking this despite the above, don't try to
-fight it harder (e.g. rotating proxies, spoofing more aggressively) —
-that crosses from "checking a page occasionally" into scraping evasion.
-At that point, just check the page yourself, or increase the interval.
+If BookMyShow or District starts hard-blocking this despite the above,
+don't try to fight it harder (e.g. rotating proxies, spoofing more
+aggressively) — that crosses from "checking a page occasionally" into
+scraping evasion. At that point, just check the page yourself, or increase
+the interval, and let it cool off.
+
+(This actually happened once during development: a burst of manual test
+runs in a short window got both `PARADISE_BMS_0923` and
+`PARADISE_DISTRICT_0923` hard-blocked -- a real Cloudflare "Sorry, you have
+been blocked" page and an Akamai "Access Denied" page, not a timing issue.
+`check()`'s title check now recognizes those block pages and treats them
+as a failed check (retried next run) instead of misreading them as "no
+showtimes yet," which would otherwise have silently corrupted state and
+suppressed the real notification once things recovered.)
 
 ## Adjusting the schedule / dates
 

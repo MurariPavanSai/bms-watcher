@@ -162,9 +162,10 @@ def check(browser, target):
         wait_until = "networkidle" if target["type"] == "cinema_date" else "load"
         page.goto(target["url"], wait_until=wait_until, timeout=45000)
 
-        title = page.title()
-        if "moment" in title.lower() or "checking" in title.lower():
-            raise RuntimeError(f"blocked by challenge page (title={title!r})")
+        title = page.title().lower()
+        blocked_titles = ("moment", "checking", "attention required", "access denied", "blocked")
+        if any(t in title for t in blocked_titles):
+            raise RuntimeError(f"blocked by challenge/block page (title={title!r})")
 
         if target["type"] == "cinema_date":
             live, text = check_cinema_date(page, target)

@@ -20,11 +20,7 @@
     "hash": "123b02c9d55fa98898c493809436be05f3b67d79c3fb44f71ef4ad8706a734ad"
   },
   "PARADISE_BMS_0923": {
-    "live": false,
-    "hash": null
-  },
-  "PARADISE_DISTRICT_0923": {
-    "live": false,
-    "hash": null
+    "live": true,
+    "hash": "bbee429cb5c0ab252df838a3f644c71dafc03ddff9617e89ecf8ed8b37268ca2"
   }
 }
