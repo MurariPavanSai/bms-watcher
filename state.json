@@ -16,8 +16,8 @@
     "hash": "a08032cb29243617f35306bf4a42508b12fcefd4a3a207866f41c807670a3bb7"
   },
   "PRHN_0924": {
-    "live": true,
-    "hash": "65fb5fc68c551222e73430c4195cdd2a7e4a9de758d83624c166e695476bc18e"
+    "live": false,
+    "hash": null
   },
   "PARADISE_BMS_0923": {
     "live": true,
