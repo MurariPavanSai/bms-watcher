@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "consecutive_failures": 2,
+    "consecutive_failures": 0,
     "warned": false
   },
   "ALUC_0926": {
@@ -12,8 +12,8 @@
     "hash": "5f20a74e16b340bc1d9390d776289dbb39289282c3da1b37632ff066314b0fbf"
   },
   "ALUC_0924": {
-    "live": true,
-    "hash": "a08032cb29243617f35306bf4a42508b12fcefd4a3a207866f41c807670a3bb7"
+    "live": false,
+    "hash": null
   },
   "PRHN_0924": {
     "live": false,
