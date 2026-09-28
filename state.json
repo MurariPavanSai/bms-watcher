@@ -1,11 +1,11 @@
 {
   "_meta": {
-    "consecutive_failures": 1,
+    "consecutive_failures": 0,
     "warned": false
   },
   "ALUC_0926": {
-    "live": true,
-    "hash": "5c2225642c0c8bba73e991db1cda54bdf098c317981c90e848793f4809a18460"
+    "live": false,
+    "hash": null
   },
   "PRHN_0926": {
     "live": false,
